@@ -3,5 +3,5 @@ var BillOfSale = artifacts.require("./BillOfSale.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(Migrations);
-  deployer.deploy(BillOfSale);
+  deployer.deploy(BillOfSale, 1, 2, 3);
 };
