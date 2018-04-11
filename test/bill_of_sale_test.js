@@ -1,6 +1,6 @@
 var BillOfSale = artifacts.require("./BillOfSale.sol", 1);
 
-//TODO - convert this to await pattern
+//TODO - convert this to aync/await pattern
 
 contract('BillOfSale', function() {
   it("deploy and assert to true", function() {
@@ -34,9 +34,10 @@ contract('BillOfSale', function() {
 
 });
 
-//TODO add the description of the chattel
+//TODO add the description of the personalProperty (chattel) (short string)
+//TODO add the method of delivery (short string)
 
-//TODO add test for setting the ifps contract (additional terms) location
+//TODO add test for setting the ifps contract (additionalTerms field) 
 
 //TODO test for getting the status and list of seller terms
 //TODO test for getting the status and list of buyer terms
@@ -44,7 +45,7 @@ contract('BillOfSale', function() {
 //TODO test for seller performance
 
 //TODO test for performance by inputting eth
-//TODO test for seller performance
+//TODO test for seller performance by setting the propertyDelivered flag
 
 //TODO test for fullPerformanceReadiness
 

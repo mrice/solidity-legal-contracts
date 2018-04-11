@@ -1,3 +1,10 @@
+/**
+USAGE NOTES: this is not intended to be a stand alone contract. There are additional
+terms intended to be stored in an immutable form on IPFS but available for download
+here:
+https://github.com/mrice/solidity-legal-contracts/blob/master/legal-docs/bill-of-sale.md
+**/
+
 pragma solidity ^0.4.19;
 
 contract BillOfSale {

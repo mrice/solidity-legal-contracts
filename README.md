@@ -14,11 +14,11 @@ Once these things are fully baked I hope you'll take them and use them.
 
 **But keep in mind** they're just models and ideas right now. Even though I'm a lawyer I'm not necessarily convinced of their legal effectiveness and certainly can't possibly know if they're the right tools for you.
 
+**No warranties!** This is open source software that has not been tested. Use at your own risk.
+
 ## Requirements
 
-The project was set up using the [Truffle Framework](http://truffleframework.com). Make sure you have it installed locally (also, it requires Node).
-
-You'll like it. Truffle is good.
+The project was set up using the [Truffle Framework](http://truffleframework.com). Make sure you have it installed locally (also, it requires Node). You'll like it. Truffle is good.
 
 ## Running Locally
 
