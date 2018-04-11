@@ -1,35 +1,28 @@
 var BillOfSale = artifacts.require("./BillOfSale.sol", 1);
 
-//TODO - convert this to aync/await pattern
+contract('Bill of Sale unit tests', async () => {
 
-contract('BillOfSale', function() {
-  it("deploy and assert to true", function() {
-    var bos = BillOfSale.deployed();
-    assert.isTrue(true);
+  it("deploy and assert to true", async () => {
+     let bos = await BillOfSale.deployed();
+     assert.isTrue(true);
   });
 
-  it("contract owner should be set (technical)", function() {
-    return BillOfSale.deployed().then(function(bos) {
-      return bos.contractOwner.call();
-    }).then(function(contractOwner) {
-      assert.isNotTrue(contractOwner==0, "contract owner should not be 0x000...");
-    });
+  it ("contract owner should be set", async () => {
+    let bos = await BillOfSale.deployed();
+    let contractOwner = await bos.contractOwner();
+    assert.isTrue(contractOwner != 0, "contract owner should not be 0x000...");
   });
 
-  it("seller should be set (technical)", function() {
-    return BillOfSale.deployed().then(function(bos) {
-      return bos.seller.call();
-    }).then(function(seller) {
-      assert.isNotTrue(seller==0, "seller should not be 0x000...");
-    });
+  it ("seller should be set", async () => {
+    let bos = await BillOfSale.deployed();
+    let seller = await bos.seller();
+    assert.isTrue(seller != 0, "seller should not be 0x000...");
   });
 
-  it("buyer should be set (technical)", function() {
-    return BillOfSale.deployed().then(function(bos) {
-      return bos.buyer.call();
-    }).then(function(buyer) {
-      assert.isNotTrue(buyer==0, "buyer should not be 0x000...");
-    });
+  it ("buyer should be set", async () => {
+    let bos = await BillOfSale.deployed();
+    let buyer = await bos.buyer();
+    assert.isTrue(buyer != 0, "buyer should not be 0x000...");
   });
 
 });
@@ -37,7 +30,7 @@ contract('BillOfSale', function() {
 //TODO add the description of the personalProperty (chattel) (short string)
 //TODO add the method of delivery (short string)
 
-//TODO add test for setting the ifps contract (additionalTerms field) 
+//TODO add test for setting the ifps contract (additionalTerms field)
 
 //TODO test for getting the status and list of seller terms
 //TODO test for getting the status and list of buyer terms

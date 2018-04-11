@@ -20,9 +20,23 @@ Once these things are fully baked I hope you'll take them and use them.
 
 The project was set up using the [Truffle Framework](http://truffleframework.com). Make sure you have it installed locally (also, it requires Node). You'll like it. Truffle is good.
 
+Also, the test suite uses the newer async/await features of node so you'll need version 9x installed. Check your version first:
+
+```
+node --version
+```
+
 ## Running Locally
 
 If you want to play around with the contracts, make sure you run the tests.
+
+First start up the local test network
+
+```
+ganache-cli
+```
+
+Then run the tests:
 
 ```
 truffle test
