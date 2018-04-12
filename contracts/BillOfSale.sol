@@ -11,11 +11,23 @@ contract BillOfSale {
   address public contractOwner;
   address public seller;
   address public buyer;
+  string public personalProperty;
+  string public deliveryMethod;
 
   function BillOfSale(address _contractOwner, address _seller, address _buyer) public {
     contractOwner = _contractOwner;
     seller = _seller;
     buyer = _buyer;
+  }
+
+  function setPersonalProperty(string _personalProperty) public {
+    require(msg.sender == seller);
+    personalProperty = _personalProperty;
+  }
+
+  function setDeliveryMethod(string _deliveryMethod) public {
+    require(msg.sender == buyer || msg.sender == seller);
+    deliveryMethod = _deliveryMethod;
   }
 
   function kill() public {

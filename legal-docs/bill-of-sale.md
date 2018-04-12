@@ -30,7 +30,7 @@ The Agreement will be performed when the Item has been transferred and the follo
 1. *seller* field is set;
 2. *buyer* field is set;
 3. a copy of this Document has been stored on an immutable file system and its location stored in the *additionalTerms* field;
-4. *personalProperty* and *methodOfDelivery* fields are set;
+4. *personalProperty* and *deliveryMethod* fields are set;
 5. Buyer funds the contract;
 6. Seller transfers the Item physically or by other means to Buyer;
 7. Buyer confirms delivery of the Item by setting the *propertyDelivered* field to true; and

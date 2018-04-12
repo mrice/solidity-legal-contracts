@@ -1,36 +1,86 @@
 var BillOfSale = artifacts.require("./BillOfSale.sol", 1);
 
-contract('Bill of Sale unit tests', async () => {
+contract('Bill of Sale...', async (accounts) => {
 
   it("deploy and assert to true", async () => {
      let bos = await BillOfSale.deployed();
      assert.isTrue(true);
   });
 
-  it ("contract owner should be set", async () => {
+  it ("should have a contractOwner set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let contractOwner = await bos.contractOwner();
-    assert.isTrue(contractOwner != 0, "contract owner should not be 0x000...");
+    assert.isTrue(contractOwner == accounts[0], "expected: " + accounts[0] + " got: " + contractOwner);
   });
 
-  it ("seller should be set", async () => {
+  it ("should have seller set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let seller = await bos.seller();
-    assert.isTrue(seller != 0, "seller should not be 0x000...");
+    assert.isTrue(seller == accounts[0], "expected: " + accounts[0] + " got: " + seller);
   });
 
-  it ("buyer should be set", async () => {
+  it ("should have buyer set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let buyer = await bos.buyer();
-    assert.isTrue(buyer != 0, "buyer should not be 0x000...");
+    assert.isTrue(buyer == accounts[1], "expected: " + accounts[1] + " got: " + buyer);
+  });
+
+  it ("should allow the seller to define the chattel", async() => {
+    let bos = await BillOfSale.deployed();
+    let sellerAccount = accounts[0];
+    await bos.setPersonalProperty("solidity legal forms", {from: sellerAccount});
+    let assignedPersonalProperty = await bos.personalProperty.call().valueOf();
+
+    assert.isTrue(assignedPersonalProperty == "solidity legal forms", "personalProperty not set correctly (got: " + assignedPersonalProperty + ")")
+  });
+
+  //TODO - couldn't figure out how to make assert.throws() work here; went with this
+  it ("should not let the buyer define the chattel", function() {
+    let buyerAccount = accounts[1];
+    return BillOfSale.deployed().then(function(bos) {
+        return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("should allow seller to define the delivery method", async() => {
+    let bos = await BillOfSale.deployed();
+    let sellerAccount = accounts[0];
+    await bos.setDeliveryMethod("fedex overnight", {from: sellerAccount});
+    let assignedDM = await bos.deliveryMethod.call().valueOf();
+
+    assert.isTrue(assignedDM == "fedex overnight", "deliveryMethod not set correctly (got: " + assignedDM + ")")
+  });
+
+  it ("should allow buyer to define the method of delivery", async() => {
+    let bos = await BillOfSale.deployed();
+    let buyerAccount = accounts[1];
+    await bos.setDeliveryMethod("fedex overnight", {from: buyerAccount});
+    let assignedDM = await bos.deliveryMethod.call().valueOf();
+
+    assert.isTrue(assignedDM == "fedex overnight", "deliveryMethod not set correctly (got: " + assignedDM + ")")
+  });
+
+  //TODO - couldn't figure out how to make assert.throws() work here; went with this
+  it ("should fail if a stranger to the contract tries define delivery method", function() {
+    let strangerAccount = accounts[2];
+    return BillOfSale.deployed().then(function(bos) {
+        return bos.setDeliveryMethod.call("fedex", {from:strangerAccount})
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
   });
 
 });
 
-//TODO add the description of the personalProperty (chattel) (short string)
-//TODO add the method of delivery (short string)
+//TODO do not let the delivery method changed once defined
 
-//TODO add test for setting the ifps contract (additionalTerms field)
+//TODO add test for setting the ipfs contract (additionalTerms field)
 
 //TODO test for getting the status and list of seller terms
 //TODO test for getting the status and list of buyer terms
