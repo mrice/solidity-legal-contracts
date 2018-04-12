@@ -1,8 +1,8 @@
 # solidity legal contracts
 
-At the time of this writing, this project is a playground to explore how to create legally binding smart contracts with the [Solidity](http://solidity.readthedocs.io) language targeting the Ethereum network.
+This project is a playground to explore how to create **legally binding smart contracts** with [Solidity](http://solidity.readthedocs.io) and targeting the Ethereum network.
 
-The first, example, contract is a bill of sale with additional terms. I hope to add many more in the future.
+The first example contract is a bill of sale with additional terms. I hope to add many more in the future.
 
 Please contact me if you have any questions: [michael@michaelricelaw.com](mailto:michael@michaelricelaw.com) or submit issues here on Github.
 
