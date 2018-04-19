@@ -25,6 +25,12 @@ contract('Bill of Sale...', async (accounts) => {
     assert.isTrue(buyer == accounts[1], "expected: " + accounts[1] + " got: " + buyer);
   });
 
+  it ("should have additionalTerms set at deployment", async () => {
+    let bos = await BillOfSale.deployed();
+    let additionalTerms = await bos.additionalTerms();
+    assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
+  });
+
   it ("should allow the seller to define the chattel", async() => {
     let bos = await BillOfSale.deployed();
     let sellerAccount = accounts[0];
@@ -79,8 +85,6 @@ contract('Bill of Sale...', async (accounts) => {
 });
 
 //TODO do not let the delivery method changed once defined
-
-//TODO add test for setting the ipfs contract (additionalTerms field)
 
 //TODO test for getting the status and list of seller terms
 //TODO test for getting the status and list of buyer terms
