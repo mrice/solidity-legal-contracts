@@ -3,6 +3,8 @@ var BillOfSale = artifacts.require("./BillOfSale.sol");
 
 var additionalTermsIpfsLoc = "QmTmP9ey8FuEtMrmqneCijLCjWV3riZdsRbcc3eRyAtE62";
 
+//TODO figure out how to use this to at least deploy to rinkeby
+
 module.exports = function(deployer, network, accounts) {
   deployer.deploy(Migrations);
   // in this case the seller and contract owner are the same
