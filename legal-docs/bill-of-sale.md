@@ -19,6 +19,8 @@ Seller agrees to sell an item (the "**Item**") to be described in the personalPr
 
 The Item will be transferred by a method documented in the Smart Contract in the methodOfDelivery field and title shall pass to Buyer when this Agreement is fully performed.
 
+If Seller delivers the Item and Buyer fails to set the *propertyDelivered* field of the Smart Contract as explained in section 5(7) infra within a reasonable time then the Seller may demand return of the Item.
+
 ## 4. No Warranty
 
 BUYER FURTHER AGREES THAT THE ITEM IS SOLD IN AN "AS IS" CONDITION AND THAT SELLER MAKES NO GUARANTEES OR WARRANTIES, EXPRESS OR IMPLIED, FOR THE CONDITION OF THE ITEM OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.

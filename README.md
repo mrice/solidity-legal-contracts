@@ -41,3 +41,14 @@ Then run the tests:
 ```
 truffle test
 ```
+
+## Notes
+
+### Regarding the property received flag:
+
+One of the features of the contract as written is that the buyer has to declare when he or she received the property. I think it's necessary to prevent the funds from being withdrawn without the buyer confirming receipt, yet it could create a situation where the buyer never sets the flag and the seller is never able to receive his or her funds. Seems to me this could be solved with an oracle service to, say, a check a shipment confirmation from UPS or Fedex (or whatever our locality uses) or some kind of smart property IoT connection.
+
+For now, instead of doing all that, I tried to solve it with by adding additional legal terms in the [bill_of_sale.md](../blob/master/legal-docs/bill-of-sale.md) to declare that title did not formally pass until property is received and the the contract could be "unwound" if the buyer doesn't perform by setting the field within a reasonable period of time. As I write this, I'm not sure it's actually legally effective but I think it's the right direction.
+
+The technical problem I have, as I write this, is that I'm not yet sure how to safely return the funds to the buyer in that instance from the smart contract. Added GitHub issue [no. 3](https://github.com/mrice/solidity-legal-contracts/issues/3) if you wnt to help out!!
+ 

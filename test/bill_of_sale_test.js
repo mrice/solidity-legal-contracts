@@ -82,12 +82,28 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
+  it ("should allow the buyer to declare that the property was received", async() => {
+    let bos = await BillOfSale.deployed();
+    let buyerAccount = accounts[1];
+    await bos.confirmPropertyReceived({from: buyerAccount});
+    let propertyReceived = await bos.propertyReceived.call().valueOf();
+
+    assert.isTrue(propertyReceived , "the propertyReceived flag was not set even though it should have been")
+  });
+
+  it ("should fail if a another account tries to set the property received flag", function() {
+    let strangerAccount = accounts[2];
+    return BillOfSale.deployed().then(function(bos) {
+        return bos.confirmPropertyReceived.call({from:strangerAccount})
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+
 });
-
-//TODO do not let the delivery method changed once defined
-
-//TODO test for getting the status and list of seller terms
-//TODO test for getting the status and list of buyer terms
 
 //TODO test for seller performance
 
@@ -97,3 +113,5 @@ contract('Bill of Sale...', async (accounts) => {
 //TODO test for fullPerformanceReadiness
 
 //TODO test for withdrawing eth
+
+//TODO (backlog) do not let the delivery method changed once defined

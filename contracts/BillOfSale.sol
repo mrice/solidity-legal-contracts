@@ -14,6 +14,7 @@ contract BillOfSale {
   string public additionalTerms;
   string public personalProperty;
   string public deliveryMethod;
+  bool public propertyReceived;
 
   function BillOfSale(address _contractOwner, address _seller, address _buyer,
                       string _additionalTerms) public {
@@ -31,6 +32,11 @@ contract BillOfSale {
   function setDeliveryMethod(string _deliveryMethod) public {
     require(msg.sender == buyer || msg.sender == seller);
     deliveryMethod = _deliveryMethod;
+  }
+
+  function confirmPropertyReceived() public {
+    require(msg.sender == buyer);
+    propertyReceived = true;
   }
 
   function kill() public {

@@ -1,7 +1,7 @@
 var Migrations = artifacts.require("./Migrations.sol");
 var BillOfSale = artifacts.require("./BillOfSale.sol");
 
-var additionalTermsIpfsLoc = "QmTmP9ey8FuEtMrmqneCijLCjWV3riZdsRbcc3eRyAtE62";
+var additionalTermsIpfsLoc = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
 
 //TODO figure out how to use this to at least deploy to rinkeby
 
