@@ -30,12 +30,14 @@ contract('Bill of Sale...', async (accounts) => {
     let additionalTerms = await bos.additionalTerms.call();
     assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
   });
-/*
-  if ("should have the sale price set at deployment", async() => {
-    let bos = await BillOfSale.deployed();
 
+  it ("should have sale price set at deployment", async () => {
+    let bos = await BillOfSale.deployed();
+    let salePrice = await bos.salePrice.call();
+    var expectedPrice = 10;
+    assert.isTrue(salePrice == expectedPrice, "expected salePrice to equal 10");
   });
-*/
+
   it ("should allow the seller to define the chattel", async() => {
     let bos = await BillOfSale.deployed();
     let sellerAccount = accounts[0];

@@ -15,11 +15,11 @@ There are two parties ("**Parties**") to this Agreement, a buyer ("**Buyer**") a
 
 ## 3. Agreement
 
-Seller agrees to sell an item (the "**Item**") to be described in the personalProperty field of the Smart Contract by either Buyer or Seller for sum of Ethereum cryptographic currency to be transmitted by Buyer to the Smart Contract.
+Seller agrees to sell an item (the "**Item**") to be described in the personalProperty field of the Smart Contract by either Buyer or Seller for sum of Ethereum cryptographic to be defined by the *salePrice* field of the Smart Contact, which will be defined when the Smart Contract is deployed on the Ethereum network and later funded to the Smart Contract by the Buyer as explained in section 5 *infra*.
 
 The Item will be transferred by a method documented in the Smart Contract in the methodOfDelivery field and title shall pass to Buyer when this Agreement is fully performed.
 
-If Seller delivers the Item and Buyer fails to set the *propertyDelivered* field of the Smart Contract as explained in section 5(7) infra within a reasonable time then the Seller may demand return of the Item.
+If Seller delivers the Item and Buyer fails to set the *propertyDelivered* field of the Smart Contract as explained in section 5(8) *infra* within a reasonable time then the Seller may demand return of the Item.
 
 ## 4. No Warranty
 
@@ -31,12 +31,13 @@ The Agreement will be performed when the Item has been transferred and the follo
 
 1. *seller* field is set;
 2. *buyer* field is set;
-3. a copy of this Document has been stored on an immutable file system and its location stored in the *additionalTerms* field;
-4. *personalProperty* and *deliveryMethod* fields are set;
-5. Buyer funds the contract;
-6. Seller transfers the Item physically or by other means to Buyer;
-7. Buyer confirms delivery of the Item by setting the *propertyDelivered* field to true; and
-8. Seller withdraws the funds from the Smart Contract.
+3. the *salePrice* field is set;
+4. a copy of this Document has been stored on an immutable file system and its location stored in the *additionalTerms* field;
+5. *personalProperty* and *deliveryMethod* fields are set;
+6. Buyer funds the contract;
+7. Seller transfers the Item physically or by other means to Buyer;
+8. Buyer confirms delivery of the Item by setting the *propertyDelivered* field to true; and
+9. Seller withdraws the funds from the Smart Contract.
 
 To the extent permitted by local law, the sequence of events of the Smart Contract or physical delivery of the Item is not important to the Agreement.
 

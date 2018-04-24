@@ -11,16 +11,18 @@ contract BillOfSale {
   address public contractOwner;
   address public seller;
   address public buyer;
+  uint public salePrice;
   string public additionalTerms;
   string public personalProperty;
   string public deliveryMethod;
   bool public propertyReceived;
 
   function BillOfSale(address _contractOwner, address _seller, address _buyer,
-                      string _additionalTerms) public {
+                      uint _salePrice, string _additionalTerms) public {
     contractOwner = _contractOwner;
     seller = _seller;
     buyer = _buyer;
+    salePrice = _salePrice;
     additionalTerms = _additionalTerms;
   }
 
