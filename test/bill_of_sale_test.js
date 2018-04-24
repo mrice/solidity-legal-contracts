@@ -27,10 +27,15 @@ contract('Bill of Sale...', async (accounts) => {
 
   it ("should have additionalTerms set at deployment", async () => {
     let bos = await BillOfSale.deployed();
-    let additionalTerms = await bos.additionalTerms();
+    let additionalTerms = await bos.additionalTerms.call();
     assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
   });
+/*
+  if ("should have the sale price set at deployment", async() => {
+    let bos = await BillOfSale.deployed();
 
+  });
+*/
   it ("should allow the seller to define the chattel", async() => {
     let bos = await BillOfSale.deployed();
     let sellerAccount = accounts[0];
@@ -102,10 +107,7 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-
 });
-
-//TODO test for seller performance
 
 //TODO test for performance by inputting eth
 //TODO test for seller performance by setting the propertyDelivered flag
