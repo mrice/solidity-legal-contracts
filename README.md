@@ -20,7 +20,10 @@ Would love to hear your feedback or learn from your ideas.
 
 ## Requirements
 
-The project was set up using the [Truffle Framework](http://truffleframework.com). Make sure you have it installed locally (also, it requires Node). You'll like it. Truffle is good.
+The project was set up using the [Truffle Framework](http://truffleframework.com). Make sure you're running truffle **4.1.7**, which uses Solidity version **0.4.23**.
+
+
+Make sure you have it installed locally (also, it requires Node). You'll like it. Truffle is good.
 
 Also, the test suite uses the newer async/await features of node so you'll need version 9x installed. Check your version first:
 

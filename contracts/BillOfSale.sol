@@ -5,7 +5,7 @@ here:
 https://github.com/mrice/solidity-legal-contracts/blob/master/legal-docs/bill-of-sale.md
 **/
 
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
 contract BillOfSale {
   address public contractOwner;
@@ -27,17 +27,17 @@ contract BillOfSale {
   }
 
   function setPersonalProperty(string _personalProperty) public {
-    require(msg.sender == seller);
+    require(msg.sender == seller, "only seller can describe the personal property");
     personalProperty = _personalProperty;
   }
 
   function setDeliveryMethod(string _deliveryMethod) public {
-    require(msg.sender == buyer || msg.sender == seller);
+    require(msg.sender == buyer || msg.sender == seller, "only buyer or seller can set deliver method");
     deliveryMethod = _deliveryMethod;
   }
 
   function confirmPropertyReceived() public {
-    require(msg.sender == buyer);
+    require(msg.sender == buyer, "only buyer can describe the personal property");
     propertyReceived = true;
   }
 
