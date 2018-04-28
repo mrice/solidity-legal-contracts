@@ -38,6 +38,8 @@ contract BillOfSale {
     propertyReceived = true;
   }
 
+  function () public payable { }
+
   function kill() public {
     if (msg.sender == contractOwner) {
       selfdestruct(contractOwner);

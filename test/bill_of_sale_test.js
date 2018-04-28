@@ -2,6 +2,16 @@ var BillOfSale = artifacts.require("./BillOfSale.sol", 1);
 
 contract('Bill of Sale...', async (accounts) => {
 
+  var billOfSale;
+  var contractOwnerAccount = accounts[0];
+  var sellerAccount = accounts[0];
+  var buyerAccount = accounts[1];
+  var strangerAccount = accounts[2];
+
+  beforeEach('get reference to bill of sale before each test', async() => {
+    billOfSale = await BillOfSale.deployed();
+  });
+
   it("deploy and assert to true", async () => {
      let bos = await BillOfSale.deployed();
      assert.isTrue(true);
@@ -10,19 +20,19 @@ contract('Bill of Sale...', async (accounts) => {
   it ("should have a contractOwner set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let contractOwner = await bos.contractOwner();
-    assert.isTrue(contractOwner == accounts[0], "expected: " + accounts[0] + " got: " + contractOwner);
+    assert.isTrue(contractOwner == sellerAccount, "expected: " + sellerAccount + " got: " + contractOwner);
   });
 
   it ("should have seller set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let seller = await bos.seller();
-    assert.isTrue(seller == accounts[0], "expected: " + accounts[0] + " got: " + seller);
+    assert.isTrue(seller == sellerAccount, "expected: " + sellerAccount + " got: " + seller);
   });
 
   it ("should have buyer set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let buyer = await bos.buyer();
-    assert.isTrue(buyer == accounts[1], "expected: " + accounts[1] + " got: " + buyer);
+    assert.isTrue(buyer == buyerAccount, "expected: " + buyerAccount + " got: " + buyer);
   });
 
   it ("should have additionalTerms set at deployment", async () => {
@@ -34,13 +44,12 @@ contract('Bill of Sale...', async (accounts) => {
   it ("should have sale price set at deployment", async () => {
     let bos = await BillOfSale.deployed();
     let salePrice = await bos.salePrice.call();
-    var expectedPrice = 10;
+    var expectedPrice = 1;
     assert.isTrue(salePrice == expectedPrice, "expected salePrice to equal 10");
   });
 
   it ("should allow the seller to define the chattel", async() => {
     let bos = await BillOfSale.deployed();
-    let sellerAccount = accounts[0];
     await bos.setPersonalProperty("solidity legal forms", {from: sellerAccount});
     let assignedPersonalProperty = await bos.personalProperty.call().valueOf();
 
@@ -61,7 +70,6 @@ contract('Bill of Sale...', async (accounts) => {
 
   it ("should allow seller to define the delivery method", async() => {
     let bos = await BillOfSale.deployed();
-    let sellerAccount = accounts[0];
     await bos.setDeliveryMethod("fedex overnight", {from: sellerAccount});
     let assignedDM = await bos.deliveryMethod.call().valueOf();
 
@@ -70,7 +78,6 @@ contract('Bill of Sale...', async (accounts) => {
 
   it ("should allow buyer to define the method of delivery", async() => {
     let bos = await BillOfSale.deployed();
-    let buyerAccount = accounts[1];
     await bos.setDeliveryMethod("fedex overnight", {from: buyerAccount});
     let assignedDM = await bos.deliveryMethod.call().valueOf();
 
@@ -79,7 +86,6 @@ contract('Bill of Sale...', async (accounts) => {
 
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
   it ("should fail if a stranger to the contract tries define delivery method", function() {
-    let strangerAccount = accounts[2];
     return BillOfSale.deployed().then(function(bos) {
         return bos.setDeliveryMethod.call("fedex", {from:strangerAccount})
     }).then(function (noErrorThrown) {
@@ -91,7 +97,6 @@ contract('Bill of Sale...', async (accounts) => {
 
   it ("should allow the buyer to declare that the property was received", async() => {
     let bos = await BillOfSale.deployed();
-    let buyerAccount = accounts[1];
     await bos.confirmPropertyReceived({from: buyerAccount});
     let propertyReceived = await bos.propertyReceived.call().valueOf();
 
@@ -99,7 +104,6 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should fail if a another account tries to set the property received flag", function() {
-    let strangerAccount = accounts[2];
     return BillOfSale.deployed().then(function(bos) {
         return bos.confirmPropertyReceived.call({from:strangerAccount})
     }).then(function (noErrorThrown) {
@@ -107,6 +111,12 @@ contract('Bill of Sale...', async (accounts) => {
     }, function (errorThrown) {
       assert.isTrue(true, "failure caught");
     });
+  });
+
+  it ("should allow the seller to fund the contract", async() => {
+    await billOfSale.sendTransaction({from: sellerAccount, value: 1});
+    let bosAddress = await billOfSale.address
+    assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == 1);
   });
 
 });
