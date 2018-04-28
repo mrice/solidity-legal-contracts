@@ -18,8 +18,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should have a contractOwner set at deployment", async () => {
-    let bos = await BillOfSale.deployed();
-    let contractOwner = await bos.contractOwner();
+    let contractOwner = await billOfSale.contractOwner();
     assert.isTrue(contractOwner == sellerAccount, "expected: " + sellerAccount + " got: " + contractOwner);
   });
 
