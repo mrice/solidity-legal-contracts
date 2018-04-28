@@ -15,7 +15,8 @@ contract BillOfSale {
   string public additionalTerms;
   string public personalProperty;
   string public deliveryMethod;
-  bool public propertyReceived;
+  bool public propertyReceived = false;
+  bool public fullyPerformed = false;
 
   constructor(address _contractOwner, address _seller, address _buyer,
               uint _salePrice, string _additionalTerms) public {
@@ -26,6 +27,8 @@ contract BillOfSale {
     additionalTerms = _additionalTerms;
   }
 
+  event TransactionPerformed();
+
   function setPersonalProperty(string _personalProperty) public sellerOnly {
     personalProperty = _personalProperty;
   }
@@ -34,11 +37,11 @@ contract BillOfSale {
     deliveryMethod = _deliveryMethod;
   }
 
-  function confirmPropertyReceived() public buyerOnly {
+  function confirmPropertyReceived() public buyerOnly performanceReviewed {
     propertyReceived = true;
   }
 
-  function () public payable { }
+  function () public payable performanceReviewed { }
 
   function kill() public {
     if (msg.sender == contractOwner) {
@@ -65,4 +68,14 @@ contract BillOfSale {
     _;
   }
 
+  /**
+  functions with this modifier could change contract state to full performed
+  */
+  modifier performanceReviewed() {
+    _;
+    if (propertyReceived && address(this).balance == salePrice) {
+      fullyPerformed = true;
+      emit TransactionPerformed();
+    }
+  }
 }

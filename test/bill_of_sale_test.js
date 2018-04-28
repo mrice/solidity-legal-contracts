@@ -8,6 +8,7 @@ contract('Bill of Sale...', async (accounts) => {
   var buyerAccount = accounts[1];
   var strangerAccount = accounts[2];
 
+  //TODO - this doesn't quite seem right to me. seems like we should be starting fresh with each test
   beforeEach('get reference to bill of sale before each test', async() => {
     billOfSale = await BillOfSale.deployed();
   });
@@ -103,11 +104,17 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should allow the seller to fund the contract", async() => {
+  it ("should allow anyone to fund the contract", async() => {
     await billOfSale.sendTransaction({from: sellerAccount, value: 1});
     let bosAddress = await billOfSale.address
     assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == 1);
   });
+
+  //TODO - research whether test cases always perform in order
+  it ("should indicate whether the parties performed", async() => {
+    let fullyPerformed = await billOfSale.fullyPerformed.call();
+    assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
+  })
 
 });
 
