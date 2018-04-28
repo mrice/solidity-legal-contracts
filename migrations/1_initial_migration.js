@@ -1,7 +1,8 @@
 var Migrations = artifacts.require("./Migrations.sol");
 var BillOfSale = artifacts.require("./BillOfSale.sol");
 
-var additionalTermsIpfsLoc = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
+var additionalTermsIpfsHash = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
+var saleAmount = 10000*10000*10000*10000;
 
 //TODO figure out how to use this to at least deploy to rinkeby
 
@@ -9,6 +10,6 @@ module.exports = function(deployer, network, accounts) {
   deployer.deploy(Migrations);
   // in this case the seller and contract owner are the same
   //TODO - declare what these are so it's more readable
-  deployer.deploy(BillOfSale, accounts[0], accounts[0], accounts[1], 1,
-    additionalTermsIpfsLoc);
+  deployer.deploy(BillOfSale, accounts[0], accounts[0], accounts[1], saleAmount,
+    additionalTermsIpfsHash);
 };

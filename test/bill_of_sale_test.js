@@ -7,6 +7,7 @@ contract('Bill of Sale...', async (accounts) => {
   var sellerAccount = accounts[0];
   var buyerAccount = accounts[1];
   var strangerAccount = accounts[2];
+  var saleAmount = 10000*10000*10000*10000; //TODO - works, but I cleary don't understand the scale of the values
 
   //TODO - this doesn't quite seem right to me. seems like we should be starting fresh with each test
   beforeEach('get reference to bill of sale before each test', async() => {
@@ -39,9 +40,8 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should have sale price set at deployment", async () => {
-    let salePrice = await billOfSale.salePrice.call();
-    var expectedPrice = 1;
-    assert.isTrue(salePrice == expectedPrice, "expected salePrice to equal 10");
+    let salePriceState = await billOfSale.salePrice.call();
+    assert.isTrue(salePriceState == saleAmount, "expected salePrice to equal " + saleAmount);
   });
 
   it ("should allow the seller to define the chattel", async() => {
@@ -105,23 +105,38 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should allow anyone to fund the contract", async() => {
-    await billOfSale.sendTransaction({from: sellerAccount, value: 1});
+    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
     let bosAddress = await billOfSale.address
-    assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == 1);
+    assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == saleAmount);
   });
 
   //TODO - research whether test cases always perform in order
   it ("should indicate whether the parties performed", async() => {
     let fullyPerformed = await billOfSale.fullyPerformed.call();
     assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
-  })
+  });
+
+  it ("should let the seller withdraw the funds if the contract is fully performed", async() => {
+
+    let sellerOldAccountBalance = web3.eth.getBalance(sellerAccount).toNumber();
+
+    await billOfSale.sellerWithdraw({from: sellerAccount});
+    let sellerNewAccountBalance = web3.eth.getBalance(sellerAccount).toNumber();
+
+    assert.isTrue((sellerNewAccountBalance > sellerOldAccountBalance), "seller's account should increase");
+    //TODO - to do this right we'd be accurately predicting and testing the new balance after gas cost
+
+    let bosAddress = await billOfSale.address
+    let bosBalance = web3.eth.getBalance(bosAddress).toNumber();
+    assert.isTrue(bosBalance == 0, "smart contract balance should be zero");
+
+  });
+
+  //TODO - add the case where someone other than the seller tries to withdraw
+  //TODO - add case whether seller tries to withdraw w/o fullyPerformed flag set (higher up)
 
 });
 
-//TODO test for seller performance by setting the propertyDelivered flag
-
 //TODO test for fullPerformanceReadiness + event???
-
-//TODO test for withdrawing eth
 
 //TODO (backlog) do not let the delivery method change once defined

@@ -43,6 +43,10 @@ contract BillOfSale {
 
   function () public payable performanceReviewed { }
 
+  function sellerWithdraw() public {
+    seller.transfer(address(this).balance);
+  }
+
   function kill() public {
     if (msg.sender == contractOwner) {
       selfdestruct(contractOwner);
@@ -69,7 +73,7 @@ contract BillOfSale {
   }
 
   /**
-  functions with this modifier could change contract state to full performed
+  functions with this modifier could change contract state to fully performed
   */
   modifier performanceReviewed() {
     _;
@@ -78,4 +82,5 @@ contract BillOfSale {
       emit TransactionPerformed();
     }
   }
+
 }
