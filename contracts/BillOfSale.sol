@@ -17,8 +17,8 @@ contract BillOfSale {
   string public deliveryMethod;
   bool public propertyReceived;
 
-  function BillOfSale(address _contractOwner, address _seller, address _buyer,
-                      uint _salePrice, string _additionalTerms) public {
+  constructor(address _contractOwner, address _seller, address _buyer,
+              uint _salePrice, string _additionalTerms) public {
     contractOwner = _contractOwner;
     seller = _seller;
     buyer = _buyer;
@@ -26,18 +26,15 @@ contract BillOfSale {
     additionalTerms = _additionalTerms;
   }
 
-  function setPersonalProperty(string _personalProperty) public {
-    require(msg.sender == seller, "only seller can describe the personal property");
+  function setPersonalProperty(string _personalProperty) public sellerOnly {
     personalProperty = _personalProperty;
   }
 
-  function setDeliveryMethod(string _deliveryMethod) public {
-    require(msg.sender == buyer || msg.sender == seller, "only buyer or seller can set deliver method");
+  function setDeliveryMethod(string _deliveryMethod) public buyerOrSellerOnly {
     deliveryMethod = _deliveryMethod;
   }
 
-  function confirmPropertyReceived() public {
-    require(msg.sender == buyer, "only buyer can describe the personal property");
+  function confirmPropertyReceived() public buyerOnly {
     propertyReceived = true;
   }
 
@@ -45,6 +42,25 @@ contract BillOfSale {
     if (msg.sender == contractOwner) {
       selfdestruct(contractOwner);
     }
+  }
+
+  /**
+  m o d i f i e r s - cross cutting concerns for the bill of sale contract
+  */
+
+  modifier sellerOnly() {
+    require(msg.sender == seller, "only seller can send this message");
+    _;
+  }
+
+  modifier buyerOrSellerOnly() {
+    require(msg.sender == buyer || msg.sender == seller, "only buyer or seller can send this message");
+    _;
+  }
+
+  modifier buyerOnly() {
+    require(msg.sender == buyer, "only buyer can send this message");
+    _;
   }
 
 }
