@@ -23,41 +23,35 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should have seller set at deployment", async () => {
-    let bos = await BillOfSale.deployed();
-    let seller = await bos.seller();
+    let seller = await billOfSale.seller();
     assert.isTrue(seller == sellerAccount, "expected: " + sellerAccount + " got: " + seller);
   });
 
   it ("should have buyer set at deployment", async () => {
-    let bos = await BillOfSale.deployed();
-    let buyer = await bos.buyer();
+    let buyer = await billOfSale.buyer();
     assert.isTrue(buyer == buyerAccount, "expected: " + buyerAccount + " got: " + buyer);
   });
 
   it ("should have additionalTerms set at deployment", async () => {
-    let bos = await BillOfSale.deployed();
-    let additionalTerms = await bos.additionalTerms.call();
+    let additionalTerms = await billOfSale.additionalTerms.call();
     assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
   });
 
   it ("should have sale price set at deployment", async () => {
-    let bos = await BillOfSale.deployed();
-    let salePrice = await bos.salePrice.call();
+    let salePrice = await billOfSale.salePrice.call();
     var expectedPrice = 1;
     assert.isTrue(salePrice == expectedPrice, "expected salePrice to equal 10");
   });
 
   it ("should allow the seller to define the chattel", async() => {
-    let bos = await BillOfSale.deployed();
-    await bos.setPersonalProperty("solidity legal forms", {from: sellerAccount});
-    let assignedPersonalProperty = await bos.personalProperty.call().valueOf();
+    await billOfSale.setPersonalProperty("solidity legal forms", {from: sellerAccount});
+    let assignedPersonalProperty = await billOfSale.personalProperty.call().valueOf();
 
     assert.isTrue(assignedPersonalProperty == "solidity legal forms", "personalProperty not set correctly (got: " + assignedPersonalProperty + ")")
   });
 
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
   it ("should not let the buyer define the chattel", function() {
-    let buyerAccount = accounts[1];
     return BillOfSale.deployed().then(function(bos) {
         return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
     }).then(function (noErrorThrown) {
@@ -68,17 +62,15 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should allow seller to define the delivery method", async() => {
-    let bos = await BillOfSale.deployed();
-    await bos.setDeliveryMethod("fedex overnight", {from: sellerAccount});
-    let assignedDM = await bos.deliveryMethod.call().valueOf();
+    await billOfSale.setDeliveryMethod("fedex overnight", {from: sellerAccount});
+    let assignedDM = await billOfSale.deliveryMethod.call().valueOf();
 
     assert.isTrue(assignedDM == "fedex overnight", "deliveryMethod not set correctly (got: " + assignedDM + ")")
   });
 
   it ("should allow buyer to define the method of delivery", async() => {
-    let bos = await BillOfSale.deployed();
-    await bos.setDeliveryMethod("fedex overnight", {from: buyerAccount});
-    let assignedDM = await bos.deliveryMethod.call().valueOf();
+    await billOfSale.setDeliveryMethod("fedex overnight", {from: buyerAccount});
+    let assignedDM = await billOfSale.deliveryMethod.call().valueOf();
 
     assert.isTrue(assignedDM == "fedex overnight", "deliveryMethod not set correctly (got: " + assignedDM + ")")
   });
@@ -95,9 +87,8 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should allow the buyer to declare that the property was received", async() => {
-    let bos = await BillOfSale.deployed();
-    await bos.confirmPropertyReceived({from: buyerAccount});
-    let propertyReceived = await bos.propertyReceived.call().valueOf();
+    await billOfSale.confirmPropertyReceived({from: buyerAccount});
+    let propertyReceived = await billOfSale.propertyReceived.call().valueOf();
 
     assert.isTrue(propertyReceived , "the propertyReceived flag was not set even though it should have been")
   });
@@ -120,11 +111,10 @@ contract('Bill of Sale...', async (accounts) => {
 
 });
 
-//TODO test for performance by inputting eth
 //TODO test for seller performance by setting the propertyDelivered flag
 
-//TODO test for fullPerformanceReadiness
+//TODO test for fullPerformanceReadiness + event???
 
 //TODO test for withdrawing eth
 
-//TODO (backlog) do not let the delivery method changed once defined
+//TODO (backlog) do not let the delivery method change once defined
