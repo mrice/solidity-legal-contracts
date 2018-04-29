@@ -43,7 +43,8 @@ contract BillOfSale {
 
   function () public payable performanceReviewed { }
 
-  function sellerWithdraw() public {
+  function sellerWithdraw() public sellerOnly {
+    require(fullyPerformed, "contract must be fully performed before seller withdrawal");
     seller.transfer(address(this).balance);
   }
 

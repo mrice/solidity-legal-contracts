@@ -79,9 +79,19 @@ contract('Bill of Sale...', async (accounts) => {
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
   it ("should fail if a stranger to the contract tries define delivery method", function() {
     return BillOfSale.deployed().then(function(bos) {
-        return bos.setDeliveryMethod.call("fedex", {from:strangerAccount})
+      return bos.setDeliveryMethod.call("fedex", {from: strangerAccount})
     }).then(function (noErrorThrown) {
-      assert.isTrue(false, "should have failed");
+      assert.fail("should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("should throw error if seller tries to withdraw before buyer confirms receipt", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.sellerWithdraw.call({from: sellerAccount})
+    }).then(function(noErrorThrown) {
+      assert.fail("should have failed");
     }, function (errorThrown) {
       assert.isTrue(true, "failure caught");
     });
@@ -116,6 +126,16 @@ contract('Bill of Sale...', async (accounts) => {
     assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
   });
 
+  it ("should throw error if someone other than seller tries to withdraw", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.sellerWithdraw.call({from: strangerAccount})
+    }).then(function(noErrorThrown) {
+      assert.fail("should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
   it ("should let the seller withdraw the funds if the contract is fully performed", async() => {
 
     let sellerOldAccountBalance = web3.eth.getBalance(sellerAccount).toNumber();
@@ -136,7 +156,5 @@ contract('Bill of Sale...', async (accounts) => {
   //TODO - add case whether seller tries to withdraw w/o fullyPerformed flag set (higher up)
 
 });
-
-//TODO test for fullPerformanceReadiness + event???
 
 //TODO (backlog) do not let the delivery method change once defined
