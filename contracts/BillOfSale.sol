@@ -41,7 +41,9 @@ contract BillOfSale {
     propertyReceived = true;
   }
 
-  function () public payable performanceReviewed { }
+  function () public payable performanceReviewed {
+    require(msg.value == salePrice);
+  }
 
   function sellerWithdraw() public sellerOnly {
     require(fullyPerformed, "contract must be fully performed before seller withdrawal");

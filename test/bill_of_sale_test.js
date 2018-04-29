@@ -104,11 +104,22 @@ contract('Bill of Sale...', async (accounts) => {
     assert.isTrue(propertyReceived , "the propertyReceived flag was not set even though it should have been")
   });
 
-  it ("should fail if a another account tries to set the property received flag", function() {
+  it ("should fail if anyone other than buyer account tries to set the property received flag", function() {
     return BillOfSale.deployed().then(function(bos) {
         return bos.confirmPropertyReceived.call({from:strangerAccount})
     }).then(function (noErrorThrown) {
       assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("should fail if the wrong amount gets paid to the contract", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      var wrongAmount = saleAmount + 2; //TODO - someday figure out why adding only one doesn't work. mind blown
+      return bos.sendTransaction({from: sellerAccount, value: wrongAmount});
+    }).then(function(noErrorThrown) {
+      assert.fail("should have failed");
     }, function (errorThrown) {
       assert.isTrue(true, "failure caught");
     });
