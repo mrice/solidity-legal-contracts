@@ -99,6 +99,12 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
+  if ("allows the seller manifest asset", async() => {
+    await billOfSale.recordSellerAssent();
+    let sellerAssent = await billOfSale.sellerAssent.call().valueOf();
+    assert.isOk(sellerAssent, "seller assent should be recorded");
+  });
+
   it ("throws error if seller tries to withdraw before buyer confirms receipt", function() {
     return BillOfSale.deployed().then(function(bos) {
       return bos.sellerWithdraw.call({from: sellerAccount})
