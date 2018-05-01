@@ -76,8 +76,7 @@ contract BillOfSale {
   }
 
   modifier buyerOrSellerOnly() {
-    require(msg.sender == buyer || msg.sender == seller, "only buyer or seller"
-      + "can send this message");
+    require(msg.sender == buyer || msg.sender == seller, "only buyer or seller can send this message");
     _;
   }
 

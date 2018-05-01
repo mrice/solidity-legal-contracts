@@ -18,10 +18,12 @@ contract('Bill of Sale...', async (accounts) => {
   var buyerAccount = accounts[1];
   var strangerAccount = accounts[2];
   var saleAmount = 10000*10000*10000*10000; //TODO - works, but I cleary don't understand the scale of the values
+  var additionalTermsIpfsHash = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
 
-  //TODO - this doesn't quite seem right to me. seems like we should be starting fresh with each test
+  //deploys a new contract on each test to try to keep the tests isolated
   beforeEach('get reference to bill of sale before each test', async() => {
-    billOfSale = await BillOfSale.deployed();
+    billOfSale = await BillOfSale.new(contractOwnerAccount, sellerAccount,
+      buyerAccount, saleAmount, additionalTermsIpfsHash);
   });
 
   it("deploy and assert to true", async () => {
@@ -136,6 +138,9 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should allow anyone to fund the contract", async() => {
+    //first the contract has to be in a state where the buyer received the property
+    await billOfSale.confirmPropertyReceived({from: buyerAccount});
+
     await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
     let bosAddress = await billOfSale.address
     assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == saleAmount);
@@ -143,6 +148,12 @@ contract('Bill of Sale...', async (accounts) => {
 
   //TODO - research whether test cases always perform in order
   it ("should indicate whether the parties performed", async() => {
+    // first condition is confirmation of property received
+    await billOfSale.confirmPropertyReceived({from: buyerAccount});
+
+    // second is payment of ether
+    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
+
     let fullyPerformed = await billOfSale.fullyPerformed.call();
     assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
   });
@@ -158,6 +169,11 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("should let the seller withdraw the funds if the contract is fully performed", async() => {
+    // first condition is confirmation of property received
+    await billOfSale.confirmPropertyReceived({from: buyerAccount});
+
+    // second is payment of ether
+    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
 
     let sellerOldAccountBalance = web3.eth.getBalance(sellerAccount).toNumber();
 
