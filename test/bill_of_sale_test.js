@@ -26,37 +26,37 @@ contract('Bill of Sale...', async (accounts) => {
       buyerAccount, saleAmount, additionalTermsIpfsHash);
   });
 
-  it("deploy and assert to true", async () => {
+  it("deploys and asserts to true", async () => {
      let bos = await BillOfSale.deployed();
      assert.isTrue(true);
   });
 
-  it ("should have a contractOwner set at deployment", async () => {
+  it ("has a contractOwner set at deployment", async () => {
     let contractOwner = await billOfSale.contractOwner();
     assert.isTrue(contractOwner == sellerAccount, "expected: " + sellerAccount + " got: " + contractOwner);
   });
 
-  it ("should have seller set at deployment", async () => {
+  it ("has seller set at deployment", async () => {
     let seller = await billOfSale.seller();
     assert.isTrue(seller == sellerAccount, "expected: " + sellerAccount + " got: " + seller);
   });
 
-  it ("should have buyer set at deployment", async () => {
+  it ("has buyer set at deployment", async () => {
     let buyer = await billOfSale.buyer();
     assert.isTrue(buyer == buyerAccount, "expected: " + buyerAccount + " got: " + buyer);
   });
 
-  it ("should have additionalTerms set at deployment", async () => {
+  it ("has additionalTerms set at deployment", async () => {
     let additionalTerms = await billOfSale.additionalTerms.call();
     assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
   });
 
-  it ("should have sale price set at deployment", async () => {
+  it ("has sale price set at deployment", async () => {
     let salePriceState = await billOfSale.salePrice.call();
     assert.isTrue(salePriceState == saleAmount, "expected salePrice to equal " + saleAmount);
   });
 
-  it ("should allow the seller to define the chattel", async() => {
+  it ("allows the seller to define the chattel", async() => {
     await billOfSale.setPersonalProperty("solidity legal forms", {from: sellerAccount});
     let assignedPersonalProperty = await billOfSale.personalProperty.call().valueOf();
 
@@ -64,7 +64,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
-  it ("should not let the buyer define the chattel", function() {
+  it ("does not let the buyer define the chattel", function() {
     return BillOfSale.deployed().then(function(bos) {
         return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
     }).then(function (noErrorThrown) {
@@ -74,14 +74,14 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should allow seller to define the delivery method", async() => {
+  it ("allows seller to define the delivery method", async() => {
     await billOfSale.setDeliveryMethod("fedex overnight", {from: sellerAccount});
     let assignedDM = await billOfSale.deliveryMethod.call().valueOf();
 
     assert.isTrue(assignedDM == "fedex overnight", "deliveryMethod not set correctly (got: " + assignedDM + ")")
   });
 
-  it ("should allow buyer to define the method of delivery", async() => {
+  it ("allows buyer to define the method of delivery", async() => {
     await billOfSale.setDeliveryMethod("fedex overnight", {from: buyerAccount});
     let assignedDM = await billOfSale.deliveryMethod.call().valueOf();
 
@@ -89,7 +89,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
-  it ("should fail if a stranger to the contract tries define delivery method", function() {
+  it ("fails if a stranger to the contract tries define delivery method", function() {
     return BillOfSale.deployed().then(function(bos) {
       return bos.setDeliveryMethod.call("fedex", {from: strangerAccount})
     }).then(function (noErrorThrown) {
@@ -99,7 +99,7 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should throw error if seller tries to withdraw before buyer confirms receipt", function() {
+  it ("throws error if seller tries to withdraw before buyer confirms receipt", function() {
     return BillOfSale.deployed().then(function(bos) {
       return bos.sellerWithdraw.call({from: sellerAccount})
     }).then(function(noErrorThrown) {
@@ -109,14 +109,14 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should allow the buyer to declare that the property was received", async() => {
+  it ("allows the buyer to declare that the property was received", async() => {
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
     let propertyReceived = await billOfSale.propertyReceived.call().valueOf();
 
     assert.isTrue(propertyReceived , "the propertyReceived flag was not set even though it should have been")
   });
 
-  it ("should fail if anyone other than buyer account tries to set the property received flag", function() {
+  it ("fails if anyone other than buyer account tries to set the property received flag", function() {
     return BillOfSale.deployed().then(function(bos) {
         return bos.confirmPropertyReceived.call({from:strangerAccount})
     }).then(function (noErrorThrown) {
@@ -126,7 +126,7 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should fail if the wrong amount gets paid to the contract", function() {
+  it ("fails if the wrong amount gets paid to the contract", function() {
     return BillOfSale.deployed().then(function(bos) {
       var wrongAmount = saleAmount + 2; //TODO - someday figure out why adding only one doesn't work. mind blown
       return bos.sendTransaction({from: sellerAccount, value: wrongAmount});
@@ -137,7 +137,7 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should allow anyone to fund the contract", async() => {
+  it ("allows anyone to fund the contract", async() => {
     //first the contract has to be in a state where the buyer received the property
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
@@ -147,7 +147,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   //TODO - research whether test cases always perform in order
-  it ("should indicate whether the parties performed", async() => {
+  it ("indicates whether the parties performed", async() => {
     // first condition is confirmation of property received
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
@@ -158,7 +158,7 @@ contract('Bill of Sale...', async (accounts) => {
     assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
   });
 
-  it ("should throw error if someone other than seller tries to withdraw", function() {
+  it ("throws an error if someone other than seller tries to withdraw", function() {
     return BillOfSale.deployed().then(function(bos) {
       return bos.sellerWithdraw.call({from: strangerAccount})
     }).then(function(noErrorThrown) {
@@ -168,7 +168,7 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  it ("should let the seller withdraw the funds if the contract is fully performed", async() => {
+  it ("lets the seller withdraw the funds if the contract is fully performed", async() => {
     // first condition is confirmation of property received
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
