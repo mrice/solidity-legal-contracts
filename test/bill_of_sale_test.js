@@ -66,7 +66,7 @@ contract('Bill of Sale...', async (accounts) => {
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
   it ("does not let the buyer define the chattel", function() {
     return BillOfSale.deployed().then(function(bos) {
-        return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
+      return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
     }).then(function (noErrorThrown) {
       assert.isTrue(false, "should have failed");
     }, function (errorThrown) {
@@ -99,10 +99,46 @@ contract('Bill of Sale...', async (accounts) => {
     });
   });
 
-  if ("allows the seller manifest asset", async() => {
-    await billOfSale.recordSellerAssent();
+  it ("allows the seller to manifest asset", async() => {
+    await billOfSale.recordSellerAssent({from: sellerAccount});
     let sellerAssent = await billOfSale.sellerAssent.call().valueOf();
     assert.isOk(sellerAssent, "seller assent should be recorded");
+  });
+
+  it ("throws error if someone other than seller tries to assent for seller", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.recordSellerAssent.call({from: strangerAccount});
+    }).then(function(noErrorThrown) {
+      assert.fail("should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("allows the buyer to manifest asset", async() => {
+    await billOfSale.recordBuyerAssent({from: buyerAccount});
+    let buyerAssent = await billOfSale.buyerAssent.call().valueOf();
+    assert.isOk(buyerAssent, "buyer assent should be recorded");
+  });
+
+  it ("throws error if someone other than buyer tries to assent for buyer", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.recordBuyerAssent.call({from: strangerAccount});
+    }).then(function(noErrorThrown) {
+      assert.fail("should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("fails if someone tries to declare the property was received without full assent", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.confirmPropertyReceived.call({from:buyerAccount});
+    }).then(function (noErrorThrown) {
+      assert.fail("should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
   });
 
   it ("throws error if seller tries to withdraw before buyer confirms receipt", function() {
@@ -116,6 +152,8 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("allows the buyer to declare that the property was received", async() => {
+    await billOfSale.recordSellerAssent({from: sellerAccount});
+    await billOfSale.recordBuyerAssent({from: buyerAccount});
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
     let propertyReceived = await billOfSale.propertyReceived.call().valueOf();
 
@@ -124,7 +162,7 @@ contract('Bill of Sale...', async (accounts) => {
 
   it ("fails if anyone other than buyer account tries to set the property received flag", function() {
     return BillOfSale.deployed().then(function(bos) {
-        return bos.confirmPropertyReceived.call({from:strangerAccount})
+      return bos.confirmPropertyReceived.call({from:strangerAccount})
     }).then(function (noErrorThrown) {
       assert.isTrue(false, "should have failed");
     }, function (errorThrown) {
@@ -144,6 +182,9 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("allows anyone to fund the contract", async() => {
+    await billOfSale.recordSellerAssent({from: sellerAccount});
+    await billOfSale.recordBuyerAssent({from: buyerAccount});
+
     //first the contract has to be in a state where the buyer received the property
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
@@ -154,6 +195,9 @@ contract('Bill of Sale...', async (accounts) => {
 
   //TODO - research whether test cases always perform in order
   it ("indicates whether the parties performed", async() => {
+    await billOfSale.recordSellerAssent({from: sellerAccount});
+    await billOfSale.recordBuyerAssent({from: buyerAccount});
+
     // first condition is confirmation of property received
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
@@ -175,6 +219,9 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("lets the seller withdraw the funds if the contract is fully performed", async() => {
+    await billOfSale.recordSellerAssent({from: sellerAccount});
+    await billOfSale.recordBuyerAssent({from: buyerAccount});
+
     // first condition is confirmation of property received
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 

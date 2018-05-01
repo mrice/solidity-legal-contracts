@@ -25,6 +25,8 @@ contract BillOfSale {
   string public additionalTerms;
   string public personalProperty;
   string public deliveryMethod;
+  bool public sellerAssent = false;
+  bool public buyerAssent = false;
   bool public propertyReceived = false;
   bool public fullyPerformed = false;
 
@@ -47,15 +49,23 @@ contract BillOfSale {
     deliveryMethod = _deliveryMethod;
   }
 
-  function confirmPropertyReceived() public buyerOnly performanceReviewed {
+  function recordSellerAssent() public sellerOnly {
+    sellerAssent = true;
+  }
+
+  function recordBuyerAssent() public buyerOnly {
+    buyerAssent = true;
+  }
+
+  function confirmPropertyReceived() public buyerOnly performanceReviewed preventIncompleteAssent {
     propertyReceived = true;
   }
 
-  function () public payable performanceReviewed {
+  function () public payable performanceReviewed preventIncompleteAssent {
     require(msg.value == salePrice);
   }
 
-  function sellerWithdraw() public sellerOnly {
+  function sellerWithdraw() public sellerOnly preventIncompleteAssent {
     require(fullyPerformed, "contract must be fully performed before seller withdrawal");
     seller.transfer(address(this).balance);
   }
@@ -82,6 +92,11 @@ contract BillOfSale {
 
   modifier buyerOnly() {
     require(msg.sender == buyer, "only buyer can send this message");
+    _;
+  }
+
+  modifier preventIncompleteAssent() {
+    require(sellerAssent == true && buyerAssent == true);
     _;
   }
 
