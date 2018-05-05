@@ -31,15 +31,18 @@ contract BillOfSale {
   bool public fullyPerformed = false;
 
   constructor(address _contractOwner, address _seller, address _buyer,
-              uint _salePrice, string _additionalTerms) public {
+              string _additionalTerms) public {
     contractOwner = _contractOwner;
     seller = _seller;
     buyer = _buyer;
-    salePrice = _salePrice;
     additionalTerms = _additionalTerms;
   }
 
   event TransactionPerformed();
+
+  function setSalePrice(uint _salePrice) public sellerOnly {
+    salePrice = _salePrice;
+  }
 
   function setPersonalProperty(string _personalProperty) public sellerOnly {
     personalProperty = _personalProperty;

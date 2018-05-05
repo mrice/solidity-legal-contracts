@@ -23,7 +23,7 @@ contract('Bill of Sale...', async (accounts) => {
   //deploys a new contract on each test to try to keep the tests isolated
   beforeEach('get reference to bill of sale before each test', async() => {
     billOfSale = await BillOfSale.new(contractOwnerAccount, sellerAccount,
-      buyerAccount, saleAmount, additionalTermsIpfsHash);
+      buyerAccount, additionalTermsIpfsHash);
   });
 
   it("deploys and asserts to true", async () => {
@@ -51,9 +51,21 @@ contract('Bill of Sale...', async (accounts) => {
     assert.isOk(additionalTerms, "expected ok; got: " + additionalTerms);
   });
 
-  it ("has sale price set at deployment", async () => {
-    let salePriceState = await billOfSale.salePrice.call();
-    assert.isTrue(salePriceState == saleAmount, "expected salePrice to equal " + saleAmount);
+  it ("does not let the someone other than seller define salePrice", function() {
+    return BillOfSale.deployed().then(function(bos) {
+      return bos.setSalePrice.call(saleAmount, {from: buyerAccount})
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("allows the seller to define the salePrice", async() => {
+    await billOfSale.setSalePrice(saleAmount, {from: sellerAccount});
+    let assignedSalePrice = await billOfSale.salePrice.call().valueOf();
+
+    assert.isTrue(assignedSalePrice == saleAmount, "sale price should have been set");
   });
 
   it ("allows the seller to define the chattel", async() => {
@@ -66,7 +78,7 @@ contract('Bill of Sale...', async (accounts) => {
   //TODO - couldn't figure out how to make assert.throws() work here; went with this
   it ("does not let the buyer define the chattel", function() {
     return BillOfSale.deployed().then(function(bos) {
-      return bos.setPersonalProperty.call("chattel", {from:buyerAccount})
+      return bos.setPersonalProperty.call("chattel", {from: buyerAccount})
     }).then(function (noErrorThrown) {
       assert.isTrue(false, "should have failed");
     }, function (errorThrown) {
@@ -152,6 +164,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("allows the buyer to declare that the property was received", async() => {
+    await billOfSale.setSalePrice(saleAmount, {from: sellerAccount});
     await billOfSale.recordSellerAssent({from: sellerAccount});
     await billOfSale.recordBuyerAssent({from: buyerAccount});
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
@@ -182,6 +195,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("allows anyone to fund the contract", async() => {
+  await billOfSale.setSalePrice(saleAmount, {from: sellerAccount});
     await billOfSale.recordSellerAssent({from: sellerAccount});
     await billOfSale.recordBuyerAssent({from: buyerAccount});
 
@@ -195,6 +209,7 @@ contract('Bill of Sale...', async (accounts) => {
 
   //TODO - research whether test cases always perform in order
   it ("indicates whether the parties performed", async() => {
+    await billOfSale.setSalePrice(saleAmount, {from: sellerAccount});
     await billOfSale.recordSellerAssent({from: sellerAccount});
     await billOfSale.recordBuyerAssent({from: buyerAccount});
 
@@ -219,6 +234,7 @@ contract('Bill of Sale...', async (accounts) => {
   });
 
   it ("lets the seller withdraw the funds if the contract is fully performed", async() => {
+    await billOfSale.setSalePrice(saleAmount, {from: sellerAccount});
     await billOfSale.recordSellerAssent({from: sellerAccount});
     await billOfSale.recordBuyerAssent({from: buyerAccount});
 
