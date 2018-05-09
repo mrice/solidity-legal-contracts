@@ -264,3 +264,5 @@ contract('Bill of Sale...', async (accounts) => {
 });
 
 //TODO (backlog) do not let the delivery method change once defined
+
+//TODO - missing a test case where description, price, and delivery method need to be defined before assent!!

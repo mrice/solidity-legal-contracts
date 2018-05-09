@@ -1,8 +1,6 @@
 
 # Bill of Sale
 
-// STILL **A LOT** TO DO HERE!!!
-
 **NOTICE:** The following instrument is an open source document freely available on the internet.  Important notes and conditions on its use are stored at https://github.com/mrice/solidity-legal-contracts. Any users of this document or the Solidity smart contract code agree to those terms of use.
 
 ## 1. Composition
