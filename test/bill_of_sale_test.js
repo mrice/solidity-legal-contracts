@@ -17,7 +17,7 @@ contract('Bill of Sale...', async (accounts) => {
   var sellerAccount = accounts[0];
   var buyerAccount = accounts[1];
   var strangerAccount = accounts[2];
-  var saleAmount = 10000*10000*10000*10000; //TODO - works, but I cleary don't understand the scale of the values
+  var saleAmount = 5 * 1000000000000000000; //5eth, right?
   var additionalTermsIpfsHash = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
 
   //deploys a new contract on each test to try to keep the tests isolated
@@ -186,7 +186,7 @@ contract('Bill of Sale...', async (accounts) => {
   it ("fails if the wrong amount gets paid to the contract", function() {
     return BillOfSale.deployed().then(function(bos) {
       var wrongAmount = saleAmount + 2; //TODO - someday figure out why adding only one doesn't work. mind blown
-      return bos.sendTransaction({from: sellerAccount, value: wrongAmount});
+      return bos.sendTransaction({from: buyerAccount, value: wrongAmount});
     }).then(function(noErrorThrown) {
       assert.fail("should have failed");
     }, function (errorThrown) {
@@ -202,7 +202,7 @@ contract('Bill of Sale...', async (accounts) => {
     //first the contract has to be in a state where the buyer received the property
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
-    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
+    await billOfSale.sendTransaction({from: buyerAccount, value: saleAmount});
     let bosAddress = await billOfSale.address
     assert.isTrue(web3.eth.getBalance(bosAddress).toNumber() == saleAmount);
   });
@@ -217,7 +217,7 @@ contract('Bill of Sale...', async (accounts) => {
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
     // second is payment of ether
-    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
+    await billOfSale.sendTransaction({from: buyerAccount, value: saleAmount});
 
     let fullyPerformed = await billOfSale.fullyPerformed.call();
     assert.isTrue(fullyPerformed, "contract should be fully performed at this point");
@@ -242,7 +242,7 @@ contract('Bill of Sale...', async (accounts) => {
     await billOfSale.confirmPropertyReceived({from: buyerAccount});
 
     // second is payment of ether
-    await billOfSale.sendTransaction({from: sellerAccount, value: saleAmount});
+    await billOfSale.sendTransaction({from: buyerAccount, value: saleAmount});
 
     let sellerOldAccountBalance = web3.eth.getBalance(sellerAccount).toNumber();
 
