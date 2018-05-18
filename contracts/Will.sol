@@ -8,26 +8,8 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var Migrations = artifacts.require("./Migrations.sol");
-var BillOfSale = artifacts.require("./BillOfSale.sol");
-var Will = artifacts.require("./Will.sol");
+pragma solidity ^0.4.21;
 
-var additionalTermsIpfsHash = "QmZfwvbQQJzHScguKPPPNLe2Bff9mnTJAFS7w37CqdqwPN";
+contract Will {
 
-//TODO figure out how to use this to at least deploy to rinkeby
-
-module.exports = function(deployer, network, accounts) {
-  deployer.deploy(Migrations);
-  // in this case the seller and contract owner are the same
-  //TODO - declare what these are so it's more readable
-
-  let ownerAccount = accounts[0];
-  let sellerAccount = ownerAccount;
-  let buyerAccount = accounts[1];
-
-  deployer.deploy(BillOfSale, ownerAccount, sellerAccount, buyerAccount,
-    additionalTermsIpfsHash);
-
-  deployer.deploy(Will);
-
-};
+}
