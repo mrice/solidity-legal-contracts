@@ -28,6 +28,6 @@ module.exports = function(deployer, network, accounts) {
   deployer.deploy(BillOfSale, ownerAccount, sellerAccount, buyerAccount,
     additionalTermsIpfsHash);
 
-  deployer.deploy(Will);
+  deployer.deploy(Will, ownerAccount);
 
 };

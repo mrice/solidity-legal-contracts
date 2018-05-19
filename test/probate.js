@@ -12,9 +12,24 @@ var Will = artifacts.require("./Will.sol", 1);
 
 contract('Probate...', async (accounts) => {
 
+  var will;
+  var contractOwner = accounts[0];
+
+  beforeEach("create a new instance of the will each time", async() => {
+    will = await Will.new(contractOwner);
+  });
+
   it ("deploys and we can prove truth", async() => {
     let will = await Will.deployed();
     assert.isTrue(true);
   });
+
+
+  it ("should have the contractOwner assigned at deploy time", async() => {
+    let assignedOwner = await will.contractOwner();
+    expect(assignedOwner).to.be.defined;
+    expect(assignedOwner).to.be.a.string;
+    expect(assignedOwner).to.equal(contractOwner);
+  })
 
 });

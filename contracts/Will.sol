@@ -11,5 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 pragma solidity ^0.4.21;
 
 contract Will {
-
+  address public contractOwner;
+  constructor(address _contractOwner) public {
+    contractOwner = _contractOwner;
+  }
 }
