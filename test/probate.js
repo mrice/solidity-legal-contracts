@@ -14,6 +14,8 @@ contract('Probate...', async (accounts) => {
 
   var will;
   var contractOwner = accounts[0];
+  var testator = accounts[1];
+  var strangerAccount = accounts[9];
 
   beforeEach("create a new instance of the will each time", async() => {
     will = await Will.new(contractOwner);
@@ -24,12 +26,29 @@ contract('Probate...', async (accounts) => {
     assert.isTrue(true);
   });
 
-
   it ("should have the contractOwner assigned at deploy time", async() => {
     let assignedOwner = await will.contractOwner();
     expect(assignedOwner).to.be.defined;
     expect(assignedOwner).to.be.a.string;
     expect(assignedOwner).to.equal(contractOwner);
-  })
+  });
+
+  it ("allows contractOwner to define testator", async() => {
+    await will.designateTestator(testator, {from:contractOwner});
+    let assignedTestator = await will.testator();
+    expect(assignedTestator).to.be.defined;
+    expect(assignedTestator).to.be.a.string;
+    expect(assignedTestator).to.equal(testator);
+  });
+
+  it ("prevents anyone but contractOwner from defining testator", function() {
+    return Will.new(contractOwner).then(function(will) {
+      return will.designateTestator.call(testator, {from: strangerAccount});
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
 
 });

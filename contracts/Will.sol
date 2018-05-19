@@ -12,7 +12,19 @@ pragma solidity ^0.4.21;
 
 contract Will {
   address public contractOwner;
+  address public testator;
+
   constructor(address _contractOwner) public {
     contractOwner = _contractOwner;
   }
+
+  function designateTestator(address _testator) public contractOwnerOnly {
+    testator = _testator;
+  }
+
+  modifier contractOwnerOnly() {
+    require(msg.sender == contractOwner);
+    _;
+  }
+
 }
