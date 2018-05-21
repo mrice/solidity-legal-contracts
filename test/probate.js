@@ -14,7 +14,8 @@ contract('Probate...', async (accounts) => {
 
   var will;
   var contractOwner = accounts[0];
-  var testator = accounts[1];
+  var testatorAccount = accounts[1];
+  var administratorAccount = accounts[2];
   var strangerAccount = accounts[9];
 
   beforeEach("create a new instance of the will each time", async() => {
@@ -34,16 +35,35 @@ contract('Probate...', async (accounts) => {
   });
 
   it ("allows contractOwner to define testator", async() => {
-    await will.designateTestator(testator, {from:contractOwner});
+    await will.designateTestator(testatorAccount, {from:contractOwner});
     let assignedTestator = await will.testator();
     expect(assignedTestator).to.be.defined;
     expect(assignedTestator).to.be.a.string;
-    expect(assignedTestator).to.equal(testator);
+    expect(assignedTestator).to.equal(testatorAccount);
   });
 
   it ("prevents anyone but contractOwner from defining testator", function() {
     return Will.new(contractOwner).then(function(will) {
-      return will.designateTestator.call(testator, {from: strangerAccount});
+      return will.designateTestator.call(testatorAccount, {from: strangerAccount});
+    }).then(function (noErrorThrown) {
+      assert.isTrue(false, "should have failed");
+    }, function (errorThrown) {
+      assert.isTrue(true, "failure caught");
+    });
+  });
+
+  it ("allows the testator to appoint an administrator", async() => {
+    await will.designateTestator(testatorAccount, {from:contractOwner});
+    await will.appointAdministrator(administratorAccount, {from:testatorAccount});
+    let assignedAdministrator = await will.administrator();
+    expect(assignedAdministrator).to.be.defined;
+    expect(assignedAdministrator).to.be.a.string;
+    expect(assignedAdministrator).to.equal(administratorAccount);
+  });
+
+  it ("prevents anyone but the testator from appointing an administrator", async() => {
+    return Will.new(contractOwner).then(function(will) {
+      return will.appointAdministrator(administratorAccount, {from: strangerAccount});
     }).then(function (noErrorThrown) {
       assert.isTrue(false, "should have failed");
     }, function (errorThrown) {

@@ -8,11 +8,12 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 contract Will {
   address public contractOwner;
   address public testator;
+  address public administrator;
 
   constructor(address _contractOwner) public {
     contractOwner = _contractOwner;
@@ -22,8 +23,18 @@ contract Will {
     testator = _testator;
   }
 
+  function appointAdministrator(address _administrator) public testatorOnly {
+    administrator = _administrator;
+  }
+
   modifier contractOwnerOnly() {
-    require(msg.sender == contractOwner);
+    require(msg.sender == contractOwner, "only contract owner may call this function");
+    _;
+  }
+
+  modifier testatorOnly() {
+    require(testator > 0x0, "testor must be defined first");
+    require(msg.sender == testator, "only testator may call this function");
     _;
   }
 
