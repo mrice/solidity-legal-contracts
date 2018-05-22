@@ -16,6 +16,7 @@ contract('Probate...', async (accounts) => {
   var contractOwner = accounts[0];
   var testatorAccount = accounts[1];
   var administratorAccount = accounts[2];
+  var daughter1Account = accounts[3];
   var strangerAccount = accounts[9];
 
   beforeEach("create a new instance of the will each time", async() => {
@@ -69,6 +70,21 @@ contract('Probate...', async (accounts) => {
     }, function (errorThrown) {
       assert.isTrue(true, "failure caught");
     });
+  });
+
+  it ("lets the testator add a beneficiary", async() => {
+    await will.designateTestator(testatorAccount, {from:contractOwner});
+    await will.appointAdministrator(administratorAccount, {from:testatorAccount});
+
+    await will.addBeneficiary(daughter1Account, 50, {from:testatorAccount});
+
+    let beneficiaries = await will.beneficiaries;
+    expect(beneficiaries).to.be.defined;
+
+    let assignedShareBigNumber = await will.beneficiaries(beneficiary1Account);
+    let derivedShare = assignedShareBigNumber.toNumber();
+    expect(derivedShare).to.equal(50);
+
   });
 
 });

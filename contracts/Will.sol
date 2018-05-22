@@ -14,6 +14,7 @@ contract Will {
   address public contractOwner;
   address public testator;
   address public administrator;
+  mapping(address => uint) public beneficiaries; //uint = share of 100 (no percentages)
 
   constructor(address _contractOwner) public {
     contractOwner = _contractOwner;
@@ -27,13 +28,17 @@ contract Will {
     administrator = _administrator;
   }
 
+  function addBeneficiary(address beneficiary, uint share) public {
+    beneficiaries[beneficiary] = share;
+  }
+
   modifier contractOwnerOnly() {
     require(msg.sender == contractOwner, "only contract owner may call this function");
     _;
   }
 
   modifier testatorOnly() {
-    require(testator > 0x0, "testor must be defined first");
+    require(testator != address(0), "testor must be defined first");
     require(msg.sender == testator, "only testator may call this function");
     _;
   }
