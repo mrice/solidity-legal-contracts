@@ -73,18 +73,31 @@ contract('Probate...', async (accounts) => {
   });
 
   it ("lets the testator add a beneficiary", async() => {
-    await will.designateTestator(testatorAccount, {from:contractOwner});
-    await will.appointAdministrator(administratorAccount, {from:testatorAccount});
+    await will.designateTestator(testatorAccount, {from: contractOwner});
+    await will.appointAdministrator(administratorAccount, {from: testatorAccount});
 
-    await will.addBeneficiary(daughter1Account, 50, {from:testatorAccount});
+    await will.addBeneficiary(daughter1Account, 50, {from: testatorAccount});
 
     let beneficiaries = await will.beneficiaries;
     expect(beneficiaries).to.be.defined;
 
-    let assignedShareBigNumber = await will.beneficiaries(beneficiary1Account);
+    let assignedShareBigNumber = await will.beneficiaries(daughter1Account);
     let derivedShare = assignedShareBigNumber.toNumber();
     expect(derivedShare).to.equal(50);
 
+  });
+
+  it ("prevents anyone but the testator from appointing an administrator", async() => {
+
+    let will = await Will.new(contractOwner);
+    await will.designateTestator(testatorAccount, {from: contractOwner});
+
+    will.addBeneficiary(daughter1Account, 50, {from: strangerAccount}).then(
+      function(noErrorThrown) {
+        assert.isTrue(false, "should have failed");
+      }, function(errorThrown) {
+        assert.isTrue(true, "failure caught");
+      });
   });
 
 });

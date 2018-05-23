@@ -28,7 +28,7 @@ contract Will {
     administrator = _administrator;
   }
 
-  function addBeneficiary(address beneficiary, uint share) public {
+  function addBeneficiary(address beneficiary, uint share) public testatorOnly {
     beneficiaries[beneficiary] = share;
   }
 
@@ -38,7 +38,7 @@ contract Will {
   }
 
   modifier testatorOnly() {
-    require(testator != address(0), "testor must be defined first");
+    require(testator != address(0), "testator must be defined first");
     require(msg.sender == testator, "only testator may call this function");
     _;
   }
