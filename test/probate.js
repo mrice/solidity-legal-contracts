@@ -87,7 +87,7 @@ contract('Probate...', async (accounts) => {
 
   });
 
-  it ("prevents anyone but the testator from appointing an administrator", async() => {
+  it ("prevents anyone but the testator from adding a beneficiary", async() => {
 
     let will = await Will.new(contractOwner);
     await will.designateTestator(testatorAccount, {from: contractOwner});
