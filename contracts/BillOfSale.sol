@@ -15,7 +15,7 @@ here:
 https://github.com/mrice/solidity-legal-contracts/blob/master/legal-docs/bill-of-sale.md
 **/
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 contract BillOfSale {
   address public contractOwner;
